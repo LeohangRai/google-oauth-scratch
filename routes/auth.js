@@ -1,9 +1,12 @@
 const router = require('express').Router();
-const getGoogleAuthURL = require('../helpers/getGoogleAuthURL')
-const getAccessTokenFromGoogle = require('../helpers/getAccessToken')
-const getUserDetails = require('../helpers/getUserDetails')
-const upsertUser = require('../helpers/upsertUser')
-const generateJWT = require('../helpers/generateJWT')
+
+const { 
+    getGoogleAuthURL, 
+    getAccessTokenFromGoogle, 
+    getUserDetails, 
+    upsertUser, 
+    generateJWT 
+} = require('../helpers')
 
 // route that returns the link to the google oauth consent screen
 router.get('/login/google', (req, res) => {
@@ -45,6 +48,7 @@ router.get('/oauth2/redirect/google', async (req, res) => {
         })
 
     } catch(err) {
+        console.log(err);
         res.status(400).json({
             error: err.message
         })

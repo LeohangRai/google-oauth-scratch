@@ -2,7 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const authRouter = require('./routes/auth')
-const protectedTestRouter = require('./routes/test')
+const protectedRouter = require('./routes/protected')
 
 const app = express()
 const PORT = process.env.PORT|| 3000
@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 })
 
 app.use(authRouter);
-app.use(protectedTestRouter);
+app.use(protectedRouter);
 
 app.listen(PORT, () => {
     console.log("Server is up and running at PORT:", PORT);

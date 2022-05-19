@@ -1,15 +1,15 @@
 const { User } = require('../models')
 
-async function upsertUser({ email, name }){
+async function upsertUser({ email, name, picture }){
     try {
         const data = await User.findOrCreate({
             where: { email },
             defaults: {
                 email,
-                name
+                name,
+                picture
             }
         })
-
         return data[0]  //returning index 0 because, findOrCreate() returns an array containing [data, createdOrNot]
     }
     catch(err) {

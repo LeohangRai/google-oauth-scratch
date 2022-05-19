@@ -35,9 +35,10 @@ router.get('/oauth2/redirect/google', async (req, res) => {
         }
 
         // upsert user details on the database
-        const { email, name } = await upsertUser({ 
+        const { email, name, picture } = await upsertUser({ 
             email: userDetails.email, 
-            name: userDetails.name 
+            name: userDetails.name,
+            picture: userDetails.picture 
         })
 
         // generate JWT for the user

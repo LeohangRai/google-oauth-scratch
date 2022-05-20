@@ -8,7 +8,8 @@
     "start": "nodemon index.js",
     "migrate:run": "npx sequelize-cli db:migrate",
     "migrate:rollback": "npx sequelize-cli db:migrate:undo",
-    "migrate:rollback:all": "npx sequelize-cli db:migrate:undo:all"
+    "migrate:rollback:all": "npx sequelize-cli db:migrate:undo:all",
+    "git:commit": "cz"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,12 @@
     "sequelize-cli": "^6.4.1"
   },
   "devDependencies": {
+    "cz-conventional-changelog": "^3.3.0",
     "nodemon": "^2.0.16"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

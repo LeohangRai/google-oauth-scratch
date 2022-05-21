@@ -1,12 +1,16 @@
 const router = require('express').Router();
+const verifyRefreshToken = require('../middlewares/refresh')
 
 const { 
     getGoogleAuthURL, 
     getAccessTokenFromGoogle, 
     getUserDetails, 
     upsertUser, 
-    generateJWT 
+    generateJWT,
+    generateRefreshJWT 
 } = require('../helpers')
+
+const redisService = require('../services/redisService')
 
 // route that returns the link to the google oauth consent screen
 router.get('/login/google', (req, res) => {
@@ -35,17 +39,24 @@ router.get('/oauth2/redirect/google', async (req, res) => {
         }
 
         // upsert user details on the database
-        const { email, name, picture } = await upsertUser({ 
+        const { email, name } = await upsertUser({ 
             email: userDetails.email, 
             name: userDetails.name,
             picture: userDetails.picture 
         })
 
         // generate JWT for the user
-        const jwt = generateJWT({ email, name })
+        const token = generateJWT({ email, name })
+
+        // generate refresh token for user 
+        const refreshToken = generateRefreshJWT({ email, name })
+
+        // store refresh token on redis
+        await redisService.appendRefreshToken(name, refreshToken)
 
         res.status(200).json({
-            token: jwt
+            token,
+            refreshToken
         })
 
     } catch(err) {
@@ -56,5 +67,30 @@ router.get('/oauth2/redirect/google', async (req, res) => {
     }
 })
 
+
+// post refresh token to get new tokens
+router.post('/token', [ verifyRefreshToken ] , (req, res) => {
+    const { name, email } = req.user
+    const token = generateJWT({ email, name })
+    res.status(200).json({
+        token
+    })
+})
+
+// post a refrest token to logout: remove all refresh tokens from the redis server for the current user
+router.post('/logout', [ verifyRefreshToken ], async (req, res) => {
+    const { name } = req.user
+    try {
+        await redisService.emptyRefreshTokens(name)
+        res.status(200).json({
+            message: "Logout succesful"
+        })
+    } catch(err) {
+        res.status(500).json({
+            err: err.message
+        })
+    }
+
+})
 
 module.exports = router;

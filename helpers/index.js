@@ -4,5 +4,6 @@ module.exports = {
     getAccessTokenFromGoogle: require('./getAccessToken'),
     getUserDetails: require('./getUserDetails'),
     upsertUser: require('./upsertUser'),
-    generateJWT: require('./generateJWT')
+    generateJWT: require('./generateJWT'),
+    generateRefreshJWT: require('./generateRefreshJWT')
 }

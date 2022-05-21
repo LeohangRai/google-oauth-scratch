@@ -8,7 +8,6 @@ async function verifyRefreshToken(req, res, next) {
             error: "No refresh token provided"   
         })
     }
-
     try {
         jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET, async (err, payload) => {
             if(err) {
@@ -16,7 +15,6 @@ async function verifyRefreshToken(req, res, next) {
                     error: err.message
                 });
             };
-
             const refreshTokenExists = await redisService.refreshTokenExists(payload.name, refreshToken)
             if(!refreshTokenExists) {
                 return res.status(401).json({
